@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Servirtium::ClimateApi do
+RSpec.describe ServirtiumDemo::ClimateApi do
   context 'returns average rainfall from 1980 to 1999' do
     DELTA = 0.0000000001
 

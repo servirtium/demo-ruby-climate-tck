@@ -3,7 +3,7 @@
 require 'faraday'
 require 'json'
 
-module Servirtium
+module ServirtiumDemo
   class ClimateApi
     CLIMATE_API    = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country'
     ANNUAL_AVERAGE = '/annualavg'

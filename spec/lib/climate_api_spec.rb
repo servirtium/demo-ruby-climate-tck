@@ -27,15 +27,15 @@ RSpec.describe ServirtiumDemo::ClimateApi do
   end
 
   context 'average rainfall not supported' do
-    xit 'for Great Britain from 1985 to 1995' do
+    it 'for Great Britain from 1985 to 1995' do
       expect { subject.get_average_annual_rainfall(1985, 1995, 'gbr') }.to(
-        raise_exception('not supported')
+        raise_error(/not supported/)
       )
     end
 
     xit 'for Middle Earth' do
       expect { subject.get_average_annual_rainfall(1980, 1999, 'mde') }.to(
-        raise_exception('not supported')
+        raise_error(/not supported/)
       )
     end
   end

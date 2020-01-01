@@ -33,9 +33,9 @@ RSpec.describe ServirtiumDemo::ClimateApi do
       )
     end
 
-    xit 'for Middle Earth' do
+    it 'for Middle Earth' do
       expect { subject.get_average_annual_rainfall(1980, 1999, 'mde') }.to(
-        raise_error(/not supported/)
+        raise_error(/Invalid country code/)
       )
     end
   end

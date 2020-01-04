@@ -6,7 +6,8 @@ require 'json'
 module ServirtiumDemo
   # Wrap the Climate Data API of the World Bank as an example API for handling remote API calls
   class ClimateApi
-    CLIMATE_API    = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country'
+    DOMAIN = 'http://climatedataapi.worldbank.org'
+    CLIMATE_API    = DOMAIN + '/climateweb/rest/v1/country'
     ANNUAL_AVERAGE = '/annualavg'
     PRECIPITATION  = '/pr'
 

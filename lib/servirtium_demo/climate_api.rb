@@ -6,10 +6,14 @@ require 'json'
 module ServirtiumDemo
   # Wrap the Climate Data API of the World Bank as an example API for handling remote API calls
   class ClimateApi
-    DOMAIN = 'http://climatedataapi.worldbank.org'
-    CLIMATE_API    = DOMAIN + '/climateweb/rest/v1/country'
-    ANNUAL_AVERAGE = '/annualavg'
-    PRECIPITATION  = '/pr'
+    DOMAIN         = 'http://climatedataapi.worldbank.org'
+    CLIMATE_API    = 'climateweb/rest/v1/country'
+    ANNUAL_AVERAGE = 'annualavg'
+    PRECIPITATION  = 'pr'
+
+    def initialize(domain = DOMAIN)
+      @climate_api = "#{domain}/#{CLIMATE_API}"
+    end
 
     def get_average_annual_rainfall(from_year, to_year, *country_isos)
       rainfall_averages = country_isos.map do |country_iso|
@@ -29,7 +33,7 @@ module ServirtiumDemo
     end
 
     def average_rainfall_url(country_iso, from_year, to_year)
-      CLIMATE_API + ANNUAL_AVERAGE + PRECIPITATION + "/#{from_year}/#{to_year}/#{country_iso}"
+      "#{@climate_api}/#{ANNUAL_AVERAGE}/#{PRECIPITATION}/#{from_year}/#{to_year}/#{country_iso}"
     end
   end
 end

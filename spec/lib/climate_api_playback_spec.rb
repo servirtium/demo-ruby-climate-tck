@@ -17,7 +17,7 @@ RSpec.describe 'Climate API Playback' do
   end
 
   # Uncomment to see the current status
-  it_behaves_like 'the Climate API'
+  #it_behaves_like 'the Climate API'
 
   # Specs for Debugging
 

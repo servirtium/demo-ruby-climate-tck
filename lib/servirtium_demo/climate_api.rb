@@ -3,7 +3,7 @@
 require 'faraday'
 require 'json'
 
-module ServirtiumDemo
+module ClimateApiDemo
   # Wrap the Climate Data API of the World Bank as an example API for handling remote API calls
   class ClimateApi
     DOMAIN         = 'http://climatedataapi.worldbank.org'

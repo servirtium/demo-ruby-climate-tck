@@ -4,7 +4,7 @@ require_relative './climate_api_shared_example'
 require 'spec_helper'
 
 RSpec.describe 'Climate API Playback' do
-  subject(:climate_api) { ServirtiumDemo::ClimateApi.new("http://127.0.0.1:#{port}") }
+  subject(:climate_api) { ClimateApiDemo::ClimateApi.new("http://127.0.0.1:#{port}") }
 
   let(:port) { 61_417 }
   let(:delta) { 0.0000000001 }

@@ -15,6 +15,11 @@ RSpec.describe 'Climate API Playback' do
       @server = ServirtiumDemo::DemoServer.new
       @server.start
     }
+    CurrentContext.setListener(@server)
+  end
+
+  after do
+    CurrentContext.unSetListener
   end
 
   # Uncomment to see the current status

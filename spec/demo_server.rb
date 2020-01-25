@@ -193,6 +193,9 @@ module ServirtiumDemo
   end
 
   class DemoServer
+
+    context = ""
+
     def initialize
       @server = WEBrick::HTTPServer.new(Port: 61_417)
 
@@ -209,6 +212,10 @@ module ServirtiumDemo
 
     def stop
       @server.shutdown
+    end
+
+    def updateContext(ctx)
+      context = ctx
     end
   end
 end

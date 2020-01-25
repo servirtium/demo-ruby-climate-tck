@@ -1,4 +1,5 @@
 require 'webrick'
+require 'ostruct'
 
 module ServirtiumDemo
   class DemoServlet
@@ -216,7 +217,41 @@ module ServirtiumDemo
     end
 
     def updateContext(ctx)
-      @interactions = File.read("spec/lib/mocks/" + ctx.downcase.gsub(" ", "_") + ".md")
+
+      @interactions = Array.new
+      markdown_string = "\n" + File.read("spec/lib/mocks/" + ctx.downcase.gsub(" ", "_") + ".md")
+      interactons = markdown_string.split("\n## Interaction ")
+      if interactons[0].length === 0
+        interactons = interactons.drop(1)
+      end
+
+      interactons.each_with_index do |val, index|
+        raise "Oops: " + val unless val.index(index.to_s + ": ") == 0
+
+        fiveBits = val.split("\n### Re")
+
+        fourBits = fiveBits.drop(1)
+
+        interaction = OpenStruct.new
+
+        raise "Oops2: " + fourBits[0] unless fourBits[0].index("quest headers recorded for playback:\n") == 0
+        interaction.requestHeaders = fourBits[0].split("\n```\n")[1]
+
+        raise "Oops3: " + fourBits[1] unless fourBits[1].index("quest body recorded for playback (") == 0
+        # extra info in that ##-line to parse
+        interaction.requestBody = fourBits[1].split("\n```\n")[1]
+
+        raise "Oops3: " + fourBits[2] unless fourBits[2].index("sponse headers recorded for playback:\n") == 0
+        interaction.responseHeaders = fourBits[2].split("\n```\n")[1]
+
+        raise "Oops4: " + fourBits[3] unless fourBits[3].index("sponse body recorded for playback (") == 0
+        # extra info in that ##-line to parse
+        interaction.responseBody = fourBits[3].split("\n```\n")[1]
+
+        @interactions << interaction
+
+      end
+
     end
   end
 end

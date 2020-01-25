@@ -10,20 +10,20 @@ RSpec.describe 'Climate API Playback' do
   let(:port) { 61_417 }
   let(:delta) { 0.0000000001 }
 
-  before do
+  before(:all) do
     @thread = Thread.new {
       @server = ServirtiumDemo::DemoServer.new
+      CurrentContext.setListener(@server)
       @server.start
     }
-    CurrentContext.setListener(@server)
   end
 
-  after do
+  after(:all) do
     CurrentContext.unSetListener
   end
 
   # Uncomment to see the current status
-  #it_behaves_like 'the Climate API'
+  it_behaves_like 'the Climate API'
 
   # Specs for Debugging
 

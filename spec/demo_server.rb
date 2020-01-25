@@ -13,6 +13,7 @@ module ServirtiumDemo
 
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     def do_GET(request, response)
+
       if request.query['a'] && request.query['b']
         a = request.query['a']
         b = request.query['b']
@@ -215,7 +216,7 @@ module ServirtiumDemo
     end
 
     def updateContext(ctx)
-      context = ctx
+      @interactions = File.read("spec/lib/mocks/" + ctx.downcase.gsub(" ", "_") + ".md")
     end
   end
 end

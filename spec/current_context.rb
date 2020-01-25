@@ -1,10 +1,7 @@
 class CurrentContext
 
   def self.update(ctx)
-    # This needs to be passed to the Servirtium playbacker so that it knows which markdown to load
-    if @@listener
-      @@listener.updateContext(ctx)
-    end
+    @@listener&.updateContext(ctx)
   end
 
   def self.setListener(listener)

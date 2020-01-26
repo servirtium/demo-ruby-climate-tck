@@ -13,26 +13,26 @@ module ServirtiumDemo
 
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     def do_GET(request, response)
-      if request.query['a'] && request.query['b']
-        a = request.query['a']
-        b = request.query['b']
-        response.status = 200
-        response.content_type = 'application/json'
+      #if request.query['a'] && request.query['b']
+      #  a = request.query['a']
+      #  b = request.query['b']
+      #  response.status = 200
+      #  response.content_type = 'application/xml'
 
-        result = case request.path
-                 when '/add'
-                   DemoServlet.add(a, b)
-                 when '/subtract'
-                   DemoServlet.subtract(a, b)
-                 else
-                   'No such method'
-                 end
-
-        response.body = result.to_s + "\n"
-      else
-        response.status = 200
-        response.body = json_response
-      end
+      #  result = case request.path
+      #           when '/add'
+      #             DemoServlet.add(a, b)
+      #           when '/subtract'
+      #             DemoServlet.subtract(a, b)
+      #           else
+      #             'No such method'
+      #           end
+      #
+      #  response.body = result.to_s + "\n"
+      #else
+      response.status = 200
+      response.body = xml_response
+      #end
     end
 
     private

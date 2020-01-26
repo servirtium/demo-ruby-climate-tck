@@ -2,6 +2,10 @@ require 'webrick'
 require 'ostruct'
 
 module ServirtiumDemo
+
+  class << self; attr_accessor :interactionIndex; end
+  class << self; attr_accessor :interactions; end
+
   class DemoServlet
     def self.add(a, b)
       a.to_i + b.to_i
@@ -34,6 +38,12 @@ module ServirtiumDemo
       else
         response.status = 200
         response.body = json_response
+
+        this_interaction = ServirtiumDemo.interactions[ServirtiumDemo.interactionIndex]
+        puts "This interaction should be with HTTP verb: " + this_interaction.requestVerb
+        puts "This interaction should be to URL: " + this_interaction.requestURL
+        ServirtiumDemo.interactionIndex += 1
+
       end
     end
 
@@ -218,14 +228,16 @@ module ServirtiumDemo
 
     def updateContext(ctx)
 
-      @interactions = Array.new
+      ServirtiumDemo.interactionIndex = 0
+      ServirtiumDemo.interactions = Array.new
+
       markdown_string = "\n" + File.read("spec/lib/mocks/" + ctx.downcase.gsub(" ", "_") + ".md")
-      interactons = markdown_string.split("\n## Interaction ")
-      if interactons[0].length === 0
-        interactons = interactons.drop(1)
+      interactonz = markdown_string.split("\n## Interaction ")
+      if interactonz[0].length === 0
+        interactonz = interactonz.drop(1)
       end
 
-      interactons.each_with_index do |val, index|
+      interactonz.each_with_index do |val, index|
         raise "Oops: " + val unless val.index(index.to_s + ": ") == 0
 
         line1 = val.split("\n")[0]
@@ -267,7 +279,7 @@ module ServirtiumDemo
         interaction.responseMimeType = mimeType
         interaction.responseBody = fourBits[3].split("\n```\n")[1]
 
-        @interactions << interaction
+        ServirtiumDemo.interactions << interaction
 
       end
 

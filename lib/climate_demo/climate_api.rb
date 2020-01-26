@@ -33,7 +33,7 @@ module ClimateApiDemo
     end
 
     def average_rainfall_url(country_iso, from_year, to_year)
-      "#{@climate_api}/#{ANNUAL_AVERAGE}/#{PRECIPITATION}/#{from_year}/#{to_year}/#{country_iso}"
+      "#{@climate_api}/#{ANNUAL_AVERAGE}/#{PRECIPITATION}/#{from_year}/#{to_year}/#{country_iso}.json"
     end
   end
 end

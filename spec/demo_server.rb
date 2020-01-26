@@ -1,38 +1,11 @@
 require 'webrick'
 
 module ServirtiumDemo
-  class DemoServlet
-    def self.add(a, b)
-      a.to_i + b.to_i
-    end
-
-    def self.subtract(a, b)
-      a.to_i - b.to_i
-    end
-  end
-
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     def do_GET(request, response)
-      #if request.query['a'] && request.query['b']
-      #  a = request.query['a']
-      #  b = request.query['b']
-      #  response.status = 200
-      #  response.content_type = 'application/xml'
-
-      #  result = case request.path
-      #           when '/add'
-      #             DemoServlet.add(a, b)
-      #           when '/subtract'
-      #             DemoServlet.subtract(a, b)
-      #           else
-      #             'No such method'
-      #           end
-      #
-      #  response.body = result.to_s + "\n"
-      #else
+      response.content_type = 'application/xml'
       response.status = 200
       response.body = xml_response
-      #end
     end
 
     private

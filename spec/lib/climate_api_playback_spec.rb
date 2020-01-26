@@ -23,7 +23,7 @@ RSpec.describe 'Climate API Playback' do
   # Specs for Debugging
 
   it 'for Great Britain' do
-    result = climate_api.get_average_annual_rainfall(1980, 1999, 'gbr')
+    result = climate_api.average_annual_rainfall(1980, 1999, 'gbr')
     expect(result).to be_within(delta).of 988.8454972331015
   end
 end

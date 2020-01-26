@@ -228,24 +228,43 @@ module ServirtiumDemo
       interactons.each_with_index do |val, index|
         raise "Oops: " + val unless val.index(index.to_s + ": ") == 0
 
+        line1 = val.split("\n")[0]
+        verb = line1.split(" ")[1]
+        url = line1.split(" ")[2]
+
+        interaction = OpenStruct.new
+
+        interaction.requestVerb = verb
+        interaction.requestURL = url
+
+        puts "Playback's verb: " + verb + " and url: " + url
+
         fiveBits = val.split("\n### Re")
 
         fourBits = fiveBits.drop(1)
 
-        interaction = OpenStruct.new
 
         raise "Oops2: " + fourBits[0] unless fourBits[0].index("quest headers recorded for playback:\n") == 0
         interaction.requestHeaders = fourBits[0].split("\n```\n")[1]
 
+        ## should fail if encountered headers are NOT the same as the headers in the playback
+
         raise "Oops3: " + fourBits[1] unless fourBits[1].index("quest body recorded for playback (") == 0
-        # extra info in that ##-line to parse
+        # note: there is extra info in that ##-line to parse
         interaction.requestBody = fourBits[1].split("\n```\n")[1]
+
+        ## should fail if encountered body are NOT the same as the body in the playback
 
         raise "Oops3: " + fourBits[2] unless fourBits[2].index("sponse headers recorded for playback:\n") == 0
         interaction.responseHeaders = fourBits[2].split("\n```\n")[1]
 
         raise "Oops4: " + fourBits[3] unless fourBits[3].index("sponse body recorded for playback (") == 0
-        # extra info in that ##-line to parse
+        line1 = fourBits[3].split("\n")[0]
+        statusCode = line1.split(" ")[5].gsub("(", "").gsub(":", "")
+        mimeType = line1.split(" ")[6].gsub(")", "").gsub(":", "")
+        puts "Playback's statusCode: " + statusCode + " and mimeType: " + mimeType
+        interaction.responseStatusCode = statusCode
+        interaction.responseMimeType = mimeType
         interaction.responseBody = fourBits[3].split("\n```\n")[1]
 
         @interactions << interaction

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'faraday'
+require "http"
 require 'json'
+require 'rexml/document'
 
 module ClimateApiDemo
   # Wrap the Climate Data API of the World Bank as an example API for handling remote API calls
@@ -25,15 +26,27 @@ module ClimateApiDemo
     private
 
     def get_average_annual_rainfall_for_country(country_iso, from_year, to_year)
-      response = Faraday.get average_rainfall_url(country_iso, from_year, to_year)
-      body     = JSON.parse response.body
-      raise "Date range #{from_year}-#{to_year} is not supported" if body.empty?
+      average_rainfall_url = average_rainfall_url(country_iso, from_year, to_year)
+      puts average_rainfall_url
+      begin
+        body = HTTP.get(average_rainfall_url).to_s
+      rescue HTTP::ConnectionError
+        puts "Connection Error: " + average_rainfall_url
+        raise "not supported Invalid country code"
+      end
 
-      body.sum { |x| x['annualData'].first } / body.size
+      raise "Date range #{from_year}-#{to_year} is not supported" if body == "<list/>"
+      raise "Invalid country code #{country_iso}" if body == "Invalid country code. Three letters are required"
+
+      xmldoc = REXML::Document.new(body)
+
+      rains = []
+      xmldoc.elements.each("//annualData/double") do |r| rains << r.text.to_f end
+      rains.sum / rains.size.to_f
     end
 
     def average_rainfall_url(country_iso, from_year, to_year)
-      "#{@climate_api}/#{ANNUAL_AVERAGE}/#{PRECIPITATION}/#{from_year}/#{to_year}/#{country_iso}.json"
+      "#{@climate_api}/#{ANNUAL_AVERAGE}/#{PRECIPITATION}/#{from_year}/#{to_year}/#{country_iso}.xml"
     end
   end
 end

@@ -1,5 +1,7 @@
 class CurrentContext
 
+  @@listener = nil
+
   def self.update(ctx)
     @@listener&.updateContext(ctx)
   end

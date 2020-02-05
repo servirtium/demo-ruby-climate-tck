@@ -4,6 +4,6 @@ Testing against the [Climate Data API of the World Bank](https://datahelpdesk.wo
 
 ## Building
 
-* Rubocop: `rake rubocop`
-* RSpec: `rake spec`
+* Rubocop: `bundle exec rake rubocop`
+* RSpec: `bundle exec rake spec`
   

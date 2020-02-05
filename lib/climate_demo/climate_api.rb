@@ -39,6 +39,10 @@ module ClimateApiDemo
       raise "Date range #{from_year}-#{to_year} is not supported" unless response.body['list']
 
       rainfall = response.body['list'].values.first
+      compute_average(rainfall)
+    end
+
+    def compute_average(rainfall)
       rainfall.sum { |x| x['annualData'].values.first.to_f } / rainfall.size
     end
 

@@ -10,16 +10,20 @@ RSpec.describe 'Climate API Playback' do
   let(:port) { 61_417 }
   let(:delta) { 0.0000000001 }
 
-  before(:each) do |example|
-    ServirtiumDemo.example = "#{self.class.description} #{example.description}".downcase.gsub(' ', '_')
-    @thread = Thread.new {
-      @server = ServirtiumDemo::DemoServer.new
+  before(:all) do
+    @thread = Thread.new do
+      @server = ServirtiumDemo::DemoServer.new port
       @server.start
-    }
+    end
+  end
+
+  before(:each) do |example|
+    playback_name = "#{self.class.description} #{example.description}".downcase.gsub(' ', '_')
+    ServirtiumDemo.example = playback_name
   end
 
   # Uncomment to see the current status
-  #it_behaves_like 'the Climate API'
+  # it_behaves_like 'the Climate API'
 
   # Specs for Debugging
 

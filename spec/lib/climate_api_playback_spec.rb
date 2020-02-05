@@ -10,7 +10,8 @@ RSpec.describe 'Climate API Playback' do
   let(:port) { 61_417 }
   let(:delta) { 0.0000000001 }
 
-  before do
+  before(:each) do |example|
+    ServirtiumDemo.example = "#{self.class.description} #{example.description}".downcase.gsub(' ', '_')
     @thread = Thread.new {
       @server = ServirtiumDemo::DemoServer.new
       @server.start
@@ -25,5 +26,10 @@ RSpec.describe 'Climate API Playback' do
   it 'for Great Britain' do
     result = climate_api.average_annual_rainfall(1980, 1999, 'gbr')
     expect(result).to be_within(delta).of 988.8454972331015
+  end
+
+  it 'for France' do
+    result = climate_api.average_annual_rainfall(1980, 1999, 'fra')
+    expect(result).to be_within(delta).of 913.7986955122727
   end
 end

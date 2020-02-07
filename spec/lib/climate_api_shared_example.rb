@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'the Climate API' do
-  context 'returns average rainfall from 1980 to 1999' do
+RSpec.shared_examples 'the Climate API direct in' do
+  context 'returning average rainfall from 1980 to 1999' do
     let(:delta) { 0.0000000001 }
 
     it 'for Great Britain' do
@@ -21,13 +21,13 @@ RSpec.shared_examples 'the Climate API' do
       expect(result).to be_within(delta).of 54.58587712129825
     end
 
-    it 'for both Great Britain & France combined' do
+    it 'for Great Britain and France combined' do
       result = climate_api.average_annual_rainfall(1980, 1999, 'gbr', 'fra')
       expect(result).to be_within(delta).of 951.3220963726872
     end
   end
 
-  context 'average rainfall not supported' do
+  context 'that the average rainfall not supported' do
     it 'for Great Britain from 1985 to 1995' do
       expect { climate_api.average_annual_rainfall(1985, 1995, 'gbr') }.to(
         raise_error(/not supported/)

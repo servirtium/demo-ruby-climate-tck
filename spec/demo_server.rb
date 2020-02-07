@@ -6,11 +6,14 @@ require 'webrick'
 module ServirtiumDemo
   class << self
     attr_accessor :example
+    attr_accessor :interaction
   end
 
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     # rubocop:disable Naming/MethodName
     def do_GET(_request, response)
+      @responses ||= []
+
       response.content_type = 'application/xml'
       response.status = 200
       response.body = default_response
@@ -39,7 +42,11 @@ module ServirtiumDemo
     def retrieve_body_from(playback_file)
       markdown_file = File.read(playback_file)
       doc = RDoc::Markdown.parse(markdown_file)
-      doc.entries[8].parts.first
+      responses = doc.entries.select { |entry| entry.text.start_with? 'Response body recorded for playback' }
+      @responses = responses.map { |response| doc.entries[doc.entries.index(response) + 1] }
+      response = @responses[ServirtiumDemo.interaction].parts.first
+      ServirtiumDemo.interaction = ServirtiumDemo.interaction + 1
+      response
     rescue StandardError => _e
       raise
     end

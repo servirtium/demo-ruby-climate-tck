@@ -4,26 +4,36 @@ require_relative './climate_api_shared_example'
 require 'spec_helper'
 require 'demo_server'
 
-RSpec.describe 'Climate API Playback' do
+RSpec.describe 'The Climate API playback (via Servirtium)' do
   subject(:climate_api) { ClimateApiDemo::ClimateApi.new("http://127.0.0.1:#{port}") }
 
   let(:port) { 61_417 }
   let(:delta) { 0.0000000001 }
 
-  before do
-    @thread = Thread.new {
-      @server = ServirtiumDemo::DemoServer.new
+  before(:all) do
+    @thread = Thread.new do
+      @server = ServirtiumDemo::DemoServer.new port
       @server.start
-    }
+    end
   end
 
-  # Uncomment to see the current status
-  #it_behaves_like 'the Climate API'
+  before(:each) do |example|
+    playback_name = "#{self.class.description}/#{example.description}".downcase.gsub(' ', '_')
+    ServirtiumDemo.example = playback_name
+    ServirtiumDemo.interaction = 0
+  end
+
+  # Switch to the shared example here, once all tests below are passing
+  it_behaves_like 'the Climate API direct in'
 
   # Specs for Debugging
 
-  it 'for Great Britain' do
-    result = climate_api.get_average_annual_rainfall(1980, 1999, 'gbr')
-    expect(result).to be_within(delta).of 988.8454972331015
+  context 'returning average rainfall from 1980 to 1999' do
+    let(:delta) { 0.0000000001 }
+
+    it 'for Great Britain and France combined' do
+      result = climate_api.average_annual_rainfall(1980, 1999, 'gbr', 'fra')
+      expect(result).to be_within(delta).of 951.3220963726872
+    end
   end
 end

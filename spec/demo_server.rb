@@ -1,206 +1,66 @@
+# frozen_string_literal: true
+
+require 'rdoc'
 require 'webrick'
 
 module ServirtiumDemo
-  class DemoServlet
-    def self.add(a, b)
-      a.to_i + b.to_i
-    end
-
-    def self.subtract(a, b)
-      a.to_i - b.to_i
-    end
+  class << self
+    attr_accessor :example
+    attr_accessor :interaction
   end
 
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
-    def do_GET(request, response)
-      if request.query['a'] && request.query['b']
-        a = request.query['a']
-        b = request.query['b']
-        response.status = 200
-        response.content_type = 'application/json'
+    # rubocop:disable Naming/MethodName
+    def do_GET(_request, response)
+      @responses ||= []
 
-        result = case request.path
-                 when '/add'
-                   DemoServlet.add(a, b)
-                 when '/subtract'
-                   DemoServlet.subtract(a, b)
-                 else
-                   'No such method'
-                 end
+      response.content_type = 'application/xml'
+      response.status = 200
+      response.body = default_response
 
-        response.body = result.to_s + "\n"
-      else
-        response.status = 200
-        response.body = json_response
-      end
+      playback_file = find_playback_file_for ServirtiumDemo.example
+      response.body = retrieve_body_from playback_file if playback_file
+
+      response
     end
+
+    # rubocop:enable Naming/MethodName
 
     private
 
     def default_response
-      'You did not provide the correct parameters'
+      "No playback file was found for #{ServirtiumDemo.example}"
     end
 
-    def json_response
-      response = <<-RESPONSE
-[{"gcm":"bccr_bcm2_0","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[987.9504418944]},{"gcm":"cccma_cgcm3_1","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[815.2627636718801]},{"gcm":"cnrm_cm3","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1099.3898999037601]},{"gcm":"csiro_mk3_5","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1021.6996069333198]},{"gcm":"gfdl_cm2_0","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1019.8750146478401]},{"gcm":"gfdl_cm2_1","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1084.5603759764]},{"gcm":"ingv_echam4","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1008.2985131833999]},{"gcm":"inmcm3_0","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1194.9564575200002]},{"gcm":"ipsl_cm4","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[893.9680444336799]},{"gcm":"miroc3_2_medres","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1032.85460449136]},{"gcm":"miub_echo_g","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[905.9324633786798]},{"gcm":"mpi_echam5","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1024.2805590819598]},{"gcm":"mri_cgcm2_3_2a","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[784.5488305664002]},{"gcm":"ukmo_hadcm3","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[957.3522631840398]},{"gcm":"ukmo_hadgem1","variable":"pr","fromYear":1980,"toYear":1999,"annualData":[1001.7526196294]}]
-      RESPONSE
-      response
+    def find_playback_file_for(example_path)
+      filepath = "spec/lib/mocks/#{example_path}.md"
+      return filepath if File.exist? filepath
+
+      raise StandardError, "File [#{filepath}] not found"
     end
 
-    def xml_response
-      response = <<-RESPONSE
-<list>
-  <domain.web.AnnualGcmDatum>
-    <gcm>bccr_bcm2_0</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>987.9504418944</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>cccma_cgcm3_1</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>815.2627636718801</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>cnrm_cm3</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1099.3898999037601</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>csiro_mk3_5</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1021.6996069333198</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>gfdl_cm2_0</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1019.8750146478401</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>gfdl_cm2_1</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1084.5603759764</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>ingv_echam4</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1008.2985131833999</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>inmcm3_0</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1194.9564575200002</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>ipsl_cm4</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>893.9680444336799</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>miroc3_2_medres</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1032.85460449136</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>miub_echo_g</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>905.9324633786798</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>mpi_echam5</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1024.2805590819598</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>mri_cgcm2_3_2a</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>784.5488305664002</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>ukmo_hadcm3</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>957.3522631840398</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-  <domain.web.AnnualGcmDatum>
-    <gcm>ukmo_hadgem1</gcm>
-    <variable>pr</variable>
-    <fromYear>1980</fromYear>
-    <toYear>1999</toYear>
-    <annualData>
-      <double>1001.7526196294</double>
-    </annualData>
-  </domain.web.AnnualGcmDatum>
-</list>
-      RESPONSE
+    def retrieve_body_from(playback_file)
+      markdown_file = File.read(playback_file)
+      doc = RDoc::Markdown.parse(markdown_file)
+      responses = doc.entries.select { |entry| entry.text.start_with? 'Response body recorded for playback' }
+      @responses = responses.map { |response| doc.entries[doc.entries.index(response) + 1] }
+      response = @responses[ServirtiumDemo.interaction].parts.first
+      ServirtiumDemo.interaction = ServirtiumDemo.interaction + 1
       response
+    rescue StandardError => _e
+      raise
     end
   end
 
   class DemoServer
-    def initialize
-      @server = WEBrick::HTTPServer.new(Port: 61_417)
+    def initialize(port)
+      @server = WEBrick::HTTPServer.new(Port: port)
 
-      @server.mount "/", ServirtiumServlet
+      @server.mount '/', ServirtiumServlet
 
-      trap("INT") {
+      trap('INT') do
         @server.shutdown
-      }
+      end
     end
 
     def start

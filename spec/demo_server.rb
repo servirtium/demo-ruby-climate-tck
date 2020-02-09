@@ -42,13 +42,21 @@ module ServirtiumDemo
     def retrieve_body_from(playback_file)
       markdown_file = File.read(playback_file)
       doc = RDoc::Markdown.parse(markdown_file)
-      responses = doc.entries.select { |entry| entry.text.start_with? 'Response body recorded for playback' }
-      @responses = responses.map { |response| doc.entries[doc.entries.index(response) + 1] }
+      parse_responses(doc)
       response = @responses[ServirtiumDemo.interaction].parts.first
       ServirtiumDemo.interaction = ServirtiumDemo.interaction + 1
       response
     rescue StandardError => _e
       raise
+    end
+
+    def parse_responses(doc)
+      @responses = []
+      take_next = false
+      doc.entries.each do |entry|
+        @responses << entry if take_next
+        take_next = entry.text.start_with? 'Response body recorded for playback'
+      end
     end
   end
 

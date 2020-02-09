@@ -25,15 +25,4 @@ RSpec.describe 'The Climate API playback (via Servirtium)' do
 
   # Switch to the shared example here, once all tests below are passing
   it_behaves_like 'the Climate API direct in'
-
-  # Specs for Debugging
-
-  context 'returning average rainfall from 1980 to 1999' do
-    let(:delta) { 0.0000000001 }
-
-    it 'for Great Britain and France combined' do
-      result = climate_api.average_annual_rainfall(1980, 1999, 'gbr', 'fra')
-      expect(result).to be_within(delta).of 951.3220963726872
-    end
-  end
 end

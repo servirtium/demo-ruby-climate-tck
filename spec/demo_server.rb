@@ -9,7 +9,7 @@ module ServirtiumDemo
     attr_accessor :interaction
   end
 
-  class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
+  class ServirtiumPlaybackServlet < WEBrick::HTTPServlet::AbstractServlet
     # rubocop:disable Naming/MethodName
     def do_GET(_request, response)
       @responses ||= []
@@ -61,10 +61,10 @@ module ServirtiumDemo
   end
 
   class DemoServer
-    def initialize(port)
+    def initialize(port, servirtium_servlet)
       @server = WEBrick::HTTPServer.new(Port: port)
 
-      @server.mount '/', ServirtiumServlet
+      @server.mount '/', servirtium_servlet
 
       trap('INT') do
         @server.shutdown

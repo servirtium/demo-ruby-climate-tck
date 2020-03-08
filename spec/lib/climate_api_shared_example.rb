@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'the Climate API direct in' do
+RSpec.shared_examples 'the Climate API in' do
   context 'returning average rainfall from 1980 to 1999' do
     let(:delta) { 0.0000000001 }
 

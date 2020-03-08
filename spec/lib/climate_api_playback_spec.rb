@@ -13,7 +13,7 @@ RSpec.describe 'The Climate API playback (via Servirtium)' do
 
   before(:all) do
     @thread = Thread.new do
-      @server = ServirtiumDemo::DemoServer.new port, ServirtiumPlaybackServlet
+      @server = ServirtiumDemo::DemoServer.new port
       @server.start
     end
   end

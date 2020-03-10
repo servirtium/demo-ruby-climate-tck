@@ -4,3 +4,7 @@ Layout/LineLength:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+
+Style/GlobalVars:
+  Exclude:
+    - spec/spec_helper.rb

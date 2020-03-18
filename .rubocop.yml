@@ -5,6 +5,10 @@ Metrics/BlockLength:
   Exclude:
     - spec/**/*
 
+Metrics/ClassLength:
+  Exclude:
+    - spec/servirtium_playback_servlet.rb
+
 Style/GlobalVars:
   Exclude:
     - spec/spec_helper.rb

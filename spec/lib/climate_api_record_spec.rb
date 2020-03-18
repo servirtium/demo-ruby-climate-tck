@@ -13,6 +13,7 @@ RSpec.describe 'The Climate API record (via Servirtium)' do
   before(:each) do |example|
     playback_name = "#{self.class.description}/#{example.description}".downcase.gsub(' ', '_')
     ServirtiumDemo.example = playback_name
+    ServirtiumDemo.record = true
     ServirtiumDemo.interaction = 0
   end
 

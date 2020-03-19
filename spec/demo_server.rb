@@ -5,6 +5,7 @@ require 'webrick'
 
 module ServirtiumDemo
   class << self
+    attr_accessor :domain
     attr_accessor :example
     attr_accessor :interaction
   end

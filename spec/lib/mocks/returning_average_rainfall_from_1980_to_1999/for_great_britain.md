@@ -4,10 +4,10 @@
 
 ```
 Host: climatedataapi.worldbank.org
-User-Agent: Servirtium-Testing
-Accept-Encoding: gzip, deflate
-Accept: */*
-Connection: keep-alive
+User-Agent: ["Faraday v0.17.3"]
+Accept-Encoding: ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"]
+Accept: ["*/*"]
+Connection: ["close"]
 ```
 
 ### Request body recorded for playback ():

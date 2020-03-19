@@ -13,14 +13,14 @@ module ServirtiumDemo
 
   class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     # rubocop:disable Naming/MethodName
-    def do_GET(_request, response)
+    def do_GET(request, response)
       @responses ||= []
 
       response.content_type = 'application/xml'
       response.status = 200
       response.body = default_response
 
-      record_new_response ServirtiumDemo.example if ServirtiumDemo.record
+      record_new_response ServirtiumDemo.example, request if ServirtiumDemo.record
 
       playback_file = find_playback_file_for ServirtiumDemo.example
       response.body = retrieve_body_from playback_file if playback_file
@@ -36,10 +36,10 @@ module ServirtiumDemo
       "No playback file was found for #{ServirtiumDemo.example}"
     end
 
-    def record_new_response(example_path)
+    def record_new_response(example_path, request)
       filepath = playback_filepath example_path
       f = File.new(filepath, 'w')
-      f.write(build_recording)
+      f.write(build_recording(request))
       f.close
     end
 
@@ -75,18 +75,18 @@ module ServirtiumDemo
     end
 
     # rubocop:disable Metrics/MethodLength
-    def build_recording
+    def build_recording(request)
       recording = <<~RECORDING
-        ## Interaction 0: GET /climateweb/rest/v1/country/annualavg/pr/1980/1999/gbr.xml
+        ## Interaction #{ServirtiumDemo.interaction}: #{request.request_method} #{request.path}
 
         ### Request headers recorded for playback:
 
         ```
-        Host: climatedataapi.worldbank.org
-        User-Agent: Servirtium-Testing
-        Accept-Encoding: gzip, deflate
-        Accept: */*
-        Connection: keep-alive
+        Host: #{ServirtiumDemo.domain.split('//').last}
+        User-Agent: #{request.header['user-agent']}
+        Accept-Encoding: #{request.header['accept-encoding']}
+        Accept: #{request.header['accept']}
+        Connection: #{request.header['connection']}
         ```
 
         ### Request body recorded for playback ():

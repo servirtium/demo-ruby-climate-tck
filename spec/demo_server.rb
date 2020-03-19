@@ -13,7 +13,7 @@ module ServirtiumDemo
     def initialize(port)
       @server = WEBrick::HTTPServer.new(Port: port)
 
-      @server.mount '/', ServirtiumPlaybackServlet
+      @server.mount '/', ServirtiumServlet
 
       trap('INT') do
         @server.shutdown

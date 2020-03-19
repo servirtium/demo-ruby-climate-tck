@@ -11,7 +11,7 @@ module ServirtiumDemo
     attr_accessor :record
   end
 
-  class ServirtiumPlaybackServlet < WEBrick::HTTPServlet::AbstractServlet
+  class ServirtiumServlet < WEBrick::HTTPServlet::AbstractServlet
     # rubocop:disable Naming/MethodName
     def do_GET(_request, response)
       @responses ||= []

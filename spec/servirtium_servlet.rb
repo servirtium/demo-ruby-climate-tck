@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'gyoku'
 require 'rdoc'
-require 'redcarpet'
 require 'webrick'
 
 module ServirtiumDemo
@@ -74,188 +74,97 @@ module ServirtiumDemo
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def build_recording(request)
-      recording = <<~RECORDING
-        ## Interaction #{ServirtiumDemo.interaction}: #{request.request_method} #{request.path}
+    def make_request(request)
+      url = ServirtiumDemo.domain
+      connection = Faraday.new url do |conn|
+        conn.response :xml, content_type: /\bxml$/
+        conn.adapter Faraday.default_adapter
+      end
+      connection.get(request.path)
+    end
 
+    def build_recording(request)
+      response = make_request(request)
+      recording = <<~RECORDING
+        #{build_interaction_from request}
+
+        #{build_request_headers_from request}
+
+        #{build_request_body}
+
+        #{build_response_headers_from response}
+
+        #{build_response_body_from response}
+      RECORDING
+      recording
+    end
+
+    def build_interaction_from(request)
+      "## Interaction #{ServirtiumDemo.interaction}: #{request.request_method} #{request.path}"
+    end
+
+    def build_request_headers_from(request)
+      headers = <<~HEADERS
         ### Request headers recorded for playback:
 
         ```
-        Host: #{ServirtiumDemo.domain.split('//').last}
-        User-Agent: #{request.header['user-agent']}
-        Accept-Encoding: #{request.header['accept-encoding']}
-        Accept: #{request.header['accept']}
-        Connection: #{request.header['connection']}
+            Host: #{ServirtiumDemo.domain.split('//').last}
+            User-Agent: #{request.header['user-agent']}
+            Accept-Encoding: #{request.header['accept-encoding']}
+            Accept: #{request.header['accept']}
+            Connection: #{request.header['connection']}
         ```
+      HEADERS
+      headers
+    end
 
+    def build_request_body
+      body = <<~BODY
         ### Request body recorded for playback ():
 
         ```
 
 
         ```
+      BODY
+      body
+    end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
+    def build_response_headers_from(response)
+      headers = <<~HEADERS
         ### Response headers recorded for playback:
 
         ```
-        Content-Type: application/xml
-        Connection: keep-alive
-        Access-Control-Allow-Origin: *
-        Access-Control-Allow-Headers: X-Requested-With
-        Access-Control-Allow-Methods: GET
-        Strict-Transport-Security: max-age=31536000; includeSubDomains
-        Content-Security-Policy: default-src 'self'
-        Cache-Control: no-cache
-        Secure: true
-        HttpOnly: true
-        Transfer-Encoding: chunked
+          Content-Type: #{response.headers['content-type']}
+          Connection: #{response.headers['connection']}
+          Access-Control-Allow-Origin: #{response.headers['access-control-allow-origin']}
+          Access-Control-Allow-Headers: #{response.headers['access-control-allow-headers']}
+          Access-Control-Allow-Methods: #{response.headers['access-control-allow-methods']}
+          Strict-Transport-Security: #{response.headers['strict-transpor-security']}
+          Content-Security-Policy: #{response.headers['content-security-policy']}
+          Cache-Control: #{response.headers['cache-control']}
+          Secure: #{response.headers['secure']}
+          HttpOnly: #{response.headers['httponly']}
+          Transfer-Encoding: #{response.headers['transfer-encoding']}
         ```
+      HEADERS
+      headers
+    end
 
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
+
+    def build_response_body_from(response)
+      body = <<~BODY
         ### Response body recorded for playback (200: application/xml):
 
         ```
-        <list>
-          <domain.web.AnnualGcmDatum>
-            <gcm>bccr_bcm2_0</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>987.9504418944</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>cccma_cgcm3_1</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>815.2627636718801</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>cnrm_cm3</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1099.3898999037601</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>csiro_mk3_5</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1021.6996069333198</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>gfdl_cm2_0</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1019.8750146478401</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>gfdl_cm2_1</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1084.5603759764</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>ingv_echam4</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1008.2985131833999</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>inmcm3_0</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1194.9564575200002</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>ipsl_cm4</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>893.9680444336799</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>miroc3_2_medres</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1032.85460449136</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>miub_echo_g</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>905.9324633786798</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>mpi_echam5</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1024.2805590819598</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>mri_cgcm2_3_2a</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>784.5488305664002</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>ukmo_hadcm3</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>957.3522631840398</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-          <domain.web.AnnualGcmDatum>
-            <gcm>ukmo_hadgem1</gcm>
-            <variable>pr</variable>
-            <fromYear>1980</fromYear>
-            <toYear>1999</toYear>
-            <annualData>
-              <double>1001.7526196294</double>
-            </annualData>
-          </domain.web.AnnualGcmDatum>
-        </list>
+        #{Gyoku.xml response.body}
         ```
-      RECORDING
-      recording
+      BODY
+      body
     end
-    # rubocop:enable Metrics/MethodLength
   end
 end

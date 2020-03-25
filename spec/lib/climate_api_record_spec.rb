@@ -28,5 +28,10 @@ RSpec.describe 'The Climate API record (via Servirtium)' do
       result = climate_api.average_annual_rainfall(1980, 1999, 'gbr')
       expect(result).to be_within(delta).of 988.8454972331015
     end
+
+    it 'for Great Britain and France combined' do
+      result = climate_api.average_annual_rainfall(1980, 1999, 'gbr', 'fra')
+      expect(result).to be_within(delta).of 951.3220963726872
+    end
   end
 end

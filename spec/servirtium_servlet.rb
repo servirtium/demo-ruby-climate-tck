@@ -38,7 +38,11 @@ module ServirtiumDemo
 
     def record_new_response(example_path, request)
       filepath = playback_filepath example_path
-      f = File.new(filepath, 'w')
+      f = if ServirtiumDemo.interaction == 0
+            File.new(filepath, 'w')
+          else
+            File.new(filepath, 'a')
+          end
       f.write(build_recording(request))
       f.close
     end

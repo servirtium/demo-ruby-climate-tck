@@ -16,6 +16,5 @@ RSpec.describe 'The Climate API playback (via Servirtium)' do
     ServirtiumDemo.interaction = 0
   end
 
-  # Switch to the shared example here, once all tests below are passing
   it_behaves_like 'the Climate API in'
 end

@@ -78,15 +78,6 @@ module ServirtiumDemo
       end
     end
 
-    def make_request(request)
-      url = ServirtiumDemo.domain
-      connection = Faraday.new url do |conn|
-        conn.response :xml, content_type: /\bxml$/
-        conn.adapter Faraday.default_adapter
-      end
-      connection.get(request.path)
-    end
-
     def build_recording(request)
       response = make_request(request)
       recording = <<~RECORDING
@@ -103,6 +94,15 @@ module ServirtiumDemo
       recording
     end
 
+    def make_request(request)
+      url = ServirtiumDemo.domain
+      connection = Faraday.new url do |conn|
+        conn.response :xml, content_type: /\bxml$/
+        conn.adapter Faraday.default_adapter
+      end
+      connection.get(request.path)
+    end
+
     def build_interaction_from(request)
       "## Interaction #{ServirtiumDemo.interaction}: #{request.request_method} #{request.path}"
     end
@@ -112,11 +112,11 @@ module ServirtiumDemo
         ### Request headers recorded for playback:
 
         ```
-            Host: #{ServirtiumDemo.domain.split('//').last}
-            User-Agent: #{request.header['user-agent']}
-            Accept-Encoding: #{request.header['accept-encoding']}
-            Accept: #{request.header['accept']}
-            Connection: #{request.header['connection']}
+        Host: #{ServirtiumDemo.domain.split('//').last}
+        User-Agent: #{request.header['user-agent']}
+        Accept-Encoding: #{request.header['accept-encoding']}
+        Accept: #{request.header['accept']}
+        Connection: #{request.header['connection']}
         ```
       HEADERS
       headers
@@ -141,17 +141,17 @@ module ServirtiumDemo
         ### Response headers recorded for playback:
 
         ```
-          Content-Type: #{response.headers['content-type']}
-          Connection: #{response.headers['connection']}
-          Access-Control-Allow-Origin: #{response.headers['access-control-allow-origin']}
-          Access-Control-Allow-Headers: #{response.headers['access-control-allow-headers']}
-          Access-Control-Allow-Methods: #{response.headers['access-control-allow-methods']}
-          Strict-Transport-Security: #{response.headers['strict-transpor-security']}
-          Content-Security-Policy: #{response.headers['content-security-policy']}
-          Cache-Control: #{response.headers['cache-control']}
-          Secure: #{response.headers['secure']}
-          HttpOnly: #{response.headers['httponly']}
-          Transfer-Encoding: #{response.headers['transfer-encoding']}
+        Content-Type: #{response.headers['content-type']}
+        Connection: #{response.headers['connection']}
+        Access-Control-Allow-Origin: #{response.headers['access-control-allow-origin']}
+        Access-Control-Allow-Headers: #{response.headers['access-control-allow-headers']}
+        Access-Control-Allow-Methods: #{response.headers['access-control-allow-methods']}
+        Strict-Transport-Security: #{response.headers['strict-transpor-security']}
+        Content-Security-Policy: #{response.headers['content-security-policy']}
+        Cache-Control: #{response.headers['cache-control']}
+        Secure: #{response.headers['secure']}
+        HttpOnly: #{response.headers['httponly']}
+        Transfer-Encoding: #{response.headers['transfer-encoding']}
         ```
       HEADERS
       headers
@@ -161,11 +161,17 @@ module ServirtiumDemo
     # rubocop:enable Metrics/AbcSize
 
     def build_response_body_from(response)
+      response_body = if response.body.is_a? Hash
+                        Gyoku.xml(response.body).gsub(' xsi:nil="true"', '')
+                      else
+                        response.body
+                      end
+
       body = <<~BODY
         ### Response body recorded for playback (200: application/xml):
 
         ```
-        #{Gyoku.xml response.body}
+        #{response_body}
         ```
       BODY
       body

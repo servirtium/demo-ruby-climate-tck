@@ -5,7 +5,7 @@ ruby '2.6.4'
 
 gem 'faraday'
 gem 'faraday_middleware'
-gem 'gyoku'
+gem 'gyoku', git: 'git@github.com:savonrb/gyoku.git', ref: '954d002'
 gem 'multi_xml'
 gem 'rake'
 gem 'rspec'

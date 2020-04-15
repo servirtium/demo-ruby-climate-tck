@@ -10,6 +10,7 @@ Accept: ["*/*"]
 Connection: ["close"]
 ```
 
+
 ### Request body recorded for playback ():
 
 ```
@@ -17,21 +18,23 @@ Connection: ["close"]
 
 ```
 
+
 ### Response headers recorded for playback:
 
 ```
 Content-Type: application/xml
-Connection: keep-alive
+Connection: close
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Headers: X-Requested-With
 Access-Control-Allow-Methods: GET
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Strict-Transport-Security: 
 Content-Security-Policy: default-src 'self'
-Cache-Control: no-cache
+Cache-Control: no-cache,no-store
 Secure: true
 HttpOnly: true
 Transfer-Encoding: chunked
 ```
+
 
 ### Response body recorded for playback (200: application/xml):
 
@@ -174,3 +177,4 @@ Transfer-Encoding: chunked
   </domain.web.AnnualGcmDatum>
 </list>
 ```
+

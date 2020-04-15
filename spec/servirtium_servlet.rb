@@ -162,7 +162,7 @@ module ServirtiumDemo
 
     def build_response_body_from(response)
       response_body = if response.body.is_a? Hash
-                        Gyoku.xml(response.body).gsub(' xsi:nil="true"', '')
+                        Gyoku.xml(response.body, pretty_print: true).gsub(' xsi:nil="true"', '')
                       else
                         response.body
                       end

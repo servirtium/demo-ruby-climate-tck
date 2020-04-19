@@ -4,10 +4,10 @@
 
 ```
 Host: climatedataapi.worldbank.org
-User-Agent: ["Faraday v0.17.3"]
+User-Agent: ["Faraday v1.0.1"]
 Accept-Encoding: ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"]
 Accept: ["*/*"]
-Connection: ["close"]
+Connection: []
 ```
 
 
@@ -23,7 +23,7 @@ Connection: ["close"]
 
 ```
 Content-Type: application/xml
-Connection: close
+Connection: keep-alive
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Headers: X-Requested-With
 Access-Control-Allow-Methods: GET

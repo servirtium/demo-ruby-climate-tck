@@ -2,6 +2,8 @@
 
 require_relative '../lib/../lib/climate_demo'
 require 'rspec'
+require 'servirtium/ruby/demo_server'
+
 PORT = 61_417
 
 RSpec.configure do |config|
@@ -9,7 +11,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     $server_thread = Thread.new do
-      Thread.current[:server] = ServirtiumDemo::DemoServer.new PORT
+      Thread.current[:server] = Servirtium::Ruby::DemoServer.new PORT
       Thread.current[:server].start
     end
   end

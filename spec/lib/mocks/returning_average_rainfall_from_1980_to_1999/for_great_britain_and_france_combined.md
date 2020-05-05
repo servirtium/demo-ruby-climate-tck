@@ -4,7 +4,7 @@
 
 ```
 Host: climatedataapi.worldbank.org
-User-Agent: ["Faraday v1.0.1"]
+User-Agent: Servirtium
 Accept-Encoding: ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"]
 Accept: ["*/*"]
 Connection: []
@@ -184,7 +184,7 @@ Transfer-Encoding: chunked
 
 ```
 Host: climatedataapi.worldbank.org
-User-Agent: ["Faraday v1.0.1"]
+User-Agent: Servirtium
 Accept-Encoding: ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"]
 Accept: ["*/*"]
 Connection: []

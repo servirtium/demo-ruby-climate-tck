@@ -2,8 +2,8 @@
 
 require_relative './climate_api_shared_example'
 require 'spec_helper'
-require 'servirtium/ruby/demo_server'
-require 'servirtium/ruby/servirtium_servlet'
+require 'servirtium/demo_server'
+require 'servirtium/servirtium_servlet'
 
 RSpec.describe 'The Climate API playback (via Servirtium)' do
   subject(:climate_api) { ClimateApiDemo::ClimateApi.new("http://127.0.0.1:#{PORT}") }
@@ -12,8 +12,8 @@ RSpec.describe 'The Climate API playback (via Servirtium)' do
 
   before(:each) do |example|
     playback_name = "#{self.class.description}/#{example.description}".downcase.gsub(' ', '_')
-    Servirtium::Ruby.example = playback_name
-    Servirtium::Ruby.interaction = 0
+    Servirtium.example = playback_name
+    Servirtium.interaction = 0
   end
 
   it_behaves_like 'the Climate API in'

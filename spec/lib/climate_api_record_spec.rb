@@ -14,7 +14,9 @@ RSpec.describe 'The Climate API record (via Servirtium)' do
     playback_name = "#{self.class.description}/#{example.description}".downcase.gsub(' ', '_')
     Servirtium.domain = ClimateApiDemo::ClimateApi::DOMAIN
     Servirtium.example = playback_name
+    Servirtium.pretty_print = true
     Servirtium.record = true
+    # Can interaction be encapsulated - not accessed in the usages of Servirtium?
     Servirtium.interaction = 0
   end
 

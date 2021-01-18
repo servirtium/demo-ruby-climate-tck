@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git@github.com:servirtium/servirtium-ruby.git
-  revision: 70ed4a9021e352d8191b214482dbe318f26a04a2
+  revision: 552ce65b8f96259d05d516011b3fec2e42bac319
   specs:
     servirtium (0.1.1)
       faraday

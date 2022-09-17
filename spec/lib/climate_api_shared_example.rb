@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require_relative '../spec_helper'
 
 RSpec.shared_examples 'the Climate API in' do
   context 'returning average rainfall from 1980 to 1999' do
